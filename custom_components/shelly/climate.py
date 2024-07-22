@@ -11,7 +11,7 @@ from homeassistant.components.climate import ClimateEntity
 from homeassistant.const import (
     ATTR_TEMPERATURE,
     PRECISION_TENTHS,
-    TEMP_CELSIUS
+    UnitOfTemperature
 )
 try:
     from homeassistant.components.climate.const import HVACMode, ClimateEntityFeature
@@ -55,7 +55,7 @@ class ShellyClimate(ShellyDevice, ClimateEntity):
     _attr_min_temp = 5
     _attr_supported_features = FEATURES
     _attr_target_temperature_step = PRECISION_TENTHS
-    _attr_temperature_unit = TEMP_CELSIUS
+    _attr_temperature_unit = UnitOfTemperature.CELSIUS
 
     """Representation of an Shelly Switch."""
     def __init__(self, dev, instance):
