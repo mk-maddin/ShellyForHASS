@@ -7,7 +7,7 @@ from homeassistant.components.sensor import SensorDeviceClass
 from homeassistant.components.binary_sensor import BinarySensorDeviceClass
 from homeassistant.const import (
     UnitOfTemperature,
-    UnitOfPower
+    UnitOfPower,
     UnitOfEnergy,
     CONF_NAME,
     CONF_SCAN_INTERVAL,
