@@ -1,7 +1,7 @@
 {
   "domain": "shellyforhass",
   "name": "Shelly smart home",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "config_flow": true,
   "documentation": "https://github.com/mk-maddin/ShellyForHASS/blob/master/README.md",
   "dependencies": ["zeroconf"],
