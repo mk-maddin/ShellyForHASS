@@ -28,6 +28,7 @@ from homeassistant.const import (
     __version__ as HAVERSION )    
 from homeassistant import config_entries
 from homeassistant.helpers import discovery
+from homeassistant.helpers import entity_registry as er
 from homeassistant.helpers.dispatcher import async_dispatcher_send
 from homeassistant.helpers.restore_state import RestoreStateData
 from homeassistant.helpers.storage import Store
@@ -193,8 +194,7 @@ class ShellyInstance():
         
         await self.update_config()
 
-        entity_reg = \
-            self.hass.helpers.entity_registry.async_get(self.hass)
+        entity_reg = er.async_get(self.hass)
         for entity in self.entities:
                 if hasattr(entity, 'config_updated'):
                     entity.config_updated()
@@ -262,9 +262,8 @@ class ShellyInstance():
             self.add_device("sensor", attr)
         if not conf.get(CONF_VERSION) and self.version_added:
             self.version_added = False
-            entity_reg = \
-                self.hass.helpers.entity_registry.async_get(self.hass)
             entity_id = "sensor." + slugify(conf.get(CONF_OBJECT_ID_PREFIX)) + "_version"
+            entity_reg = er.async_get(self.hass)
             entity_reg.async_remove(entity_id)
 
     def update_config_attributes(self):
@@ -354,8 +353,7 @@ class ShellyInstance():
                     'extra' : {'ip-addr': pys.host_ip}}
             self.add_device("sensor", attr)
 
-        entity_reg = \
-            self.hass.helpers.entity_registry.async_get(self.hass)
+        entity_reg = er.async_get(self.hass)
         entities_to_remove = []
         entities_to_fix_attr = []
         restore_expired = dt_util.as_utc(datetime.now()) - timedelta(hours=12)
@@ -421,8 +419,7 @@ class ShellyInstance():
     async def stop(self, _=None):
         """Stop Shelly."""
         _LOGGER.info("Shutting down Shelly")
-        entity_reg = \
-            self.hass.helpers.entity_registry.async_get(self.hass)
+        entity_reg = er.async_get(self.hass)
         # entities_to_remove = []
         # for entity in entity_reg.entities.values():
         #     if entity.platform == "shelly":
