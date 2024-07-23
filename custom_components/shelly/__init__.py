@@ -61,7 +61,7 @@ from .configuration_schema import CONFIG_SCHEMA, CONFIG_SCHEMA_ROOT
 
 _LOGGER = logging.getLogger(__name__)
 
-__version__ = "1.0.7"
+__version__ = "1.0.8"
 VERSION = __version__
 
 async def async_setup(hass, config):
@@ -69,7 +69,7 @@ async def async_setup(hass, config):
     if DOMAIN not in config:
         return True
     data = dict(config.get(DOMAIN))
-    hass.data["yaml_shelly"] = data
+    hass.data[YAML_DOMAIN] = data
     hass.async_create_task(
         hass.config_entries.flow.async_init(
             DOMAIN, context={"source": config_entries.SOURCE_IMPORT}, data={}
@@ -88,8 +88,8 @@ async def async_setup_entry(hass, config_entry):
         if config_entry.options: #config.yaml
             data = config_entry.options.copy()
         else:
-            if "yaml_shelly" in hass.data:
-                data = hass.data["yaml_shelly"]
+            if YAML_DOMAIN in hass.data:
+                data = hass.data[YAML_DOMAIN]
             else:
                 data = {}
                 await hass.config_entries.async_remove(config_entry.entry_id)
