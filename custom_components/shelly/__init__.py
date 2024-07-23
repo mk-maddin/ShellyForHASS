@@ -68,7 +68,7 @@ async def async_setup(hass, config):
     if DOMAIN not in config:
         return True
     data = dict(config.get(DOMAIN))
-    hass.data["yaml_shelly"] = data
+    hass.data[YAML_DOMAIN] = data
     hass.async_create_task(
         hass.config_entries.flow.async_init(
             DOMAIN, context={"source": config_entries.SOURCE_IMPORT}, data={}
@@ -80,6 +80,11 @@ async def async_setup_entry(hass, config_entry):
     """Setup Shelly component"""
     _LOGGER.info("Starting shelly, %s", __version__)
 
+    if not OLD_DOMAIN == DOMAIN and not DOMAIN in hass.data and OLD_DOMAIN in hass.data:
+        _LOGGER.warning("Migrating shelly data from, %s -> %s", OLD_DOMAIN, DOMAIN)
+        hass.data[DOMAIN] = hass.data[OLD_DOMAIN]
+        hass.data.pop(OLD_DOMAIN)
+
     if not DOMAIN in hass.data:
         hass.data[DOMAIN] = ShellyApp(hass)
 
@@ -87,8 +92,8 @@ async def async_setup_entry(hass, config_entry):
         if config_entry.options: #config.yaml
             data = config_entry.options.copy()
         else:
-            if "yaml_shelly" in hass.data:
-                data = hass.data["yaml_shelly"]
+            if YAML_DOMAIN in hass.data:
+                data = hass.data[YAML_DOMAIN]
             else:
                 data = {}
                 await hass.config_entries.async_remove(config_entry.entry_id)

@@ -17,6 +17,8 @@ from homeassistant.const import (
 DEVICE_CLASS_MOTION = 'motion'
 
 DOMAIN = 'shellyforhass'
+OLD_DOMAIN = 'shelly'
+YAML_DOMAIN = 'yaml_shelly'
 
 CONF_ADDITIONAL_INFO = 'additional_information'
 CONF_IGMPFIX = 'igmp_fix'
