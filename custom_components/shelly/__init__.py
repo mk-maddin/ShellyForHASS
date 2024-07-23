@@ -57,11 +57,11 @@ except:
 
 from .const import *
 from .configuration_schema import CONFIG_SCHEMA, CONFIG_SCHEMA_ROOT
-from .frontend import setup_frontend
+#from .frontend import setup_frontend
 
 _LOGGER = logging.getLogger(__name__)
 
-__version__ = "1.0.5"
+__version__ = "1.0.7"
 VERSION = __version__
 
 async def async_setup(hass, config):
@@ -167,9 +167,9 @@ class ShellyInstance():
             self.start_up()
         )
         self.shelly_config = {}
-        hass.loop.create_task(
-            setup_frontend(self)
-        )
+#        hass.loop.create_task(
+#            setup_frontend(self)
+#        )
 
     async def update_listener(self, hass, config_entry):
         """Handle options update."""

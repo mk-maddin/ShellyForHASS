@@ -141,7 +141,8 @@ class ShellyDevice(RestoreEntity):
         """Show state attributes in HASS"""
         attrs = {'shelly_type': self._dev.type_name(),
                  'shelly_id': self._dev.id,
-                 'ip_address': self._dev.ip_addr
+                 'ip_address': self._dev.ip_addr,
+                 'integration': DOMAIN
                 }
 
         self._debug_add_state_info(attrs)
