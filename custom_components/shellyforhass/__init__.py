@@ -67,9 +67,14 @@ VERSION = __version__
 async def async_setup(hass, config):
     """Set up this integration using yaml."""
     if DOMAIN not in config:
+        _LOGGER.warning("Shelly domain not in yaml config: %s", DOMAIN)
+        return True
+    elif DOMAIN in config and OLD_DOMAIN in hass.data:
+        _LOGGER.warning("Shelly domain in yaml config but old config entries: %s", DOMAIN)
         return True
     data = dict(config.get(DOMAIN))
     hass.data[YAML_DOMAIN] = data
+    _LOGGER.warning("Shelly configure domain from yaml: %s", DOMAIN)
     hass.async_create_task(
         hass.config_entries.flow.async_init(
             DOMAIN, context={"source": config_entries.SOURCE_IMPORT}, data={}
@@ -79,12 +84,14 @@ async def async_setup(hass, config):
 
 async def async_setup_entry(hass, config_entry):
     """Setup Shelly component"""
-    _LOGGER.info("Starting shelly, %s", __version__)
+    _LOGGER.warning("Starting shelly, %s", __version__)
 
-    if not OLD_DOMAIN == DOMAIN and not DOMAIN in hass.data and OLD_DOMAIN in hass.data:
-        _LOGGER.warning("Migrating shelly data from, %s -> %s", OLD_DOMAIN, DOMAIN)
+    if not DOMAIN in hass.data and OLD_DOMAIN in hass.data:
+        _LOGGER.fatal("Migrating shelly data from: %s -> %s", OLD_DOMAIN, DOMAIN)
         hass.data[DOMAIN] = hass.data[OLD_DOMAIN]
         hass.data.pop(OLD_DOMAIN)
+        _LOGGER.fatal("Migrating shelly data complete - reload integration once again :)")
+        return False
 
     if not DOMAIN in hass.data:
         hass.data[DOMAIN] = ShellyApp(hass)
