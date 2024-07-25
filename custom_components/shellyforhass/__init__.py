@@ -67,14 +67,14 @@ VERSION = __version__
 async def async_setup(hass, config):
     """Set up this integration using yaml."""
     if DOMAIN not in config:
-        _LOGGER.warning("Shelly domain not in yaml config: %s", DOMAIN)
+        _LOGGER.debug("%s - async_setup: domain not in yaml config", DOMAIN)
         return True
     elif DOMAIN in config and OLD_DOMAIN in hass.data:
-        _LOGGER.warning("Shelly domain in yaml config but old config entries: %s", DOMAIN)
+        _LOGGER.debug("%s - async_setup: domain not in yaml config but old: %s", DOMAIN, OLD_DOMAIN)
         return True
     data = dict(config.get(DOMAIN))
     hass.data[YAML_DOMAIN] = data
-    _LOGGER.warning("Shelly configure domain from yaml: %s", DOMAIN)
+    _LOGGER.debug("%s - async_setup: configure domain from yaml", DOMAIN)
     hass.async_create_task(
         hass.config_entries.flow.async_init(
             DOMAIN, context={"source": config_entries.SOURCE_IMPORT}, data={}
@@ -84,28 +84,34 @@ async def async_setup(hass, config):
 
 async def async_setup_entry(hass, config_entry):
     """Setup Shelly component"""
-    _LOGGER.warning("Starting shelly, %s", __version__)
+    _LOGGER.debug("%s - %s: async_setup_entry: %s", DOMAIN, __version__, config_entry.entry_id)
 
     if not DOMAIN in hass.data and OLD_DOMAIN in hass.data:
-        _LOGGER.fatal("Migrating shelly data from: %s -> %s", OLD_DOMAIN, DOMAIN)
+        _LOGGER.debug("%s - async_setup_entry: migrating shelly data from: %s -> %s",config_entry.entry_id , OLD_DOMAIN, DOMAIN)
         hass.data[DOMAIN] = hass.data[OLD_DOMAIN]
         hass.data.pop(OLD_DOMAIN)
-        _LOGGER.fatal("Migrating shelly data complete - reload integration once again :)")
+        _LOGGER.fatal("Migrating %s data complete - reload integration once again :)", OLD_DOMAIN)
         return False
 
     if not DOMAIN in hass.data:
+        _LOGGER.debug("%s - async_setup_entry: domain not in hass.data: %s", config_entry.entry_id, DOMAIN)
         hass.data[DOMAIN] = ShellyApp(hass)
 
-    if config_entry.source == "import":
+    _LOGGER.debug("%s - async_setup_entry: config_entry.source: %s", config_entry.entry_id, config_entry.source)
+    if config_entry.source == "import":        
         if config_entry.options: #config.yaml
+            _LOGGER.debug("%s - async_setup_entry: %s - data from config_entry.options", config_entry.entry_id, config_entry.source)
             data = config_entry.options.copy()
         else:
             if YAML_DOMAIN in hass.data:
+                _LOGGER.debug("%s - async_setup_entry: %s - data from yaml_domain: %s", config_entry.entry_id, config_entry.source, YAML_DOMAIN)
                 data = hass.data[YAML_DOMAIN]
             else:
+                _LOGGER.debug("%s - async_setup_entry: %s - empty data dict", config_entry.entry_id, config_entry.source)
                 data = {}
                 await hass.config_entries.async_remove(config_entry.entry_id)
     else:
+        _LOGGER.debug("%s - async_setup_entry: %s - data from config_entry.data", config_entry.entry_id, config_entry.source)
         data = config_entry.data.copy()
         data.update(config_entry.options)
 
