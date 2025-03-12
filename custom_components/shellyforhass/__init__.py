@@ -303,7 +303,8 @@ class ShellyInstance():
         await self.async_set_config('version', VERSION)
 
         conf = self.conf
-        self.local_py_shelly = conf.get(CONF_LOCAL_PY_SHELLY)
+        #self.local_py_shelly = conf.get(CONF_LOCAL_PY_SHELLY)
+        self.local_py_shelly = 'true'
         if self.local_py_shelly:
             _LOGGER.info("Loading local pyShelly")
             #pylint: disable=no-name-in-module
